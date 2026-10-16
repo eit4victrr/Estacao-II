@@ -113,3 +113,71 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+const quizForm = document.getElementById("quizForm");
+const resultado = document.getElementById("resultadoQuiz");
+
+if (quizForm && resultado) {
+
+    const respostasCorretas = {
+        q1: "b",
+        q2: "c",
+        q3: "d",
+        q4: "a",
+        q5: "c"
+    };
+
+    quizForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let pontuacao = 0;
+        let detalhes = "";
+
+        for (const pergunta in respostasCorretas) {
+            const selecionada = quizForm.querySelector(
+                `input[name="${pergunta}"]:checked`
+            );
+
+            const numero = pergunta.slice(1);
+
+            if (selecionada && selecionada.value === respostasCorretas[pergunta]) {
+                pontuacao++;
+
+                detalhes += `
+                    <p>✅ Pergunta ${numero}: resposta correta!</p>
+                `;
+            } else {
+                detalhes += `
+                    <p>❌ Pergunta ${numero}: resposta correta é a alternativa
+                    ${respostasCorretas[pergunta].toUpperCase()}.</p>
+                `;
+            }
+        }
+
+        resultado.innerHTML = `
+            <h3>Você acertou ${pontuacao} de 5 perguntas!</h3>
+            <p>${
+                pontuacao === 5
+                    ? "Excelente! Você acertou todas!"
+                    : pontuacao >= 3
+                        ? "Muito bem! Você está no caminho certo!"
+                        : "Continue estudando! Você pode melhorar!"
+            }</p>
+            <hr>
+            ${detalhes}
+        `;
+
+        resultado.style.display = "block";
+        resultado.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+    });
+
+    quizForm.addEventListener("reset", function () {
+        resultado.innerHTML = "";
+        resultado.style.display = "none";
+    });
+}
+
